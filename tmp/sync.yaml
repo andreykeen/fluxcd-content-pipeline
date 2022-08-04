@@ -1,0 +1,35 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: podinfo
+spec:
+  sourceRef:
+    kind: GitRepository
+    name: module-content-pipeline
+    namespace: flux-system
+  path: ./base/podinfo
+  serviceAccountName: kustomize-controller
+  interval: 10m0s
+  prune: true
+  wait: true
+  timeout: 5m
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: web-service
+spec:
+  dependsOn:
+    - name: podinfo
+  sourceRef:
+    kind: GitRepository
+    name: module-content-pipeline
+    namespace: flux-system
+  path: ./base/web-service
+  serviceAccountName: kustomize-controller
+  interval: 10m0s
+  prune: true
+  wait: true
+  timeout: 5m
